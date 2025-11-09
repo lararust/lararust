@@ -1,5 +1,7 @@
+pub mod cache;
 pub mod serve;
 
+use cache::Cache;
 use clap::{Parser, Subcommand};
 use serve::serve_command;
 
@@ -13,6 +15,7 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     Serve,
+    Cache(Cache),
 }
 
 pub async fn run_cli() {
@@ -20,5 +23,6 @@ pub async fn run_cli() {
 
     match cli.command {
         Some(Commands::Serve) | None => serve_command().await,
+        Some(Commands::Cache(cache)) => cache::run(&cache),
     }
 }
