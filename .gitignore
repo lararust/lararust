@@ -29,3 +29,6 @@ dist/
 .env
 .env.*
 !.env.example
+
+# Cache files
+/storage/framework/views/**/*
