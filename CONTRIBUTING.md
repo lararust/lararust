@@ -34,7 +34,7 @@ Early milestones may live in a single crate, but the roadmap calls for modular c
 - `cli/`: `lararust` binary, commands, scaffolding templates.
 - `framework/` or `core/`: service container, config, helpers.
 - `http/`: router integration (hyper + axum), middleware, controllers.
-- `view/`: LaraBlade compiler/runtime, Tera adapters.
+- `view/`: LaraBlade _r/runtime, Tera adapters.
 - `orm/`: SQLx abstractions, macros, migrations.
 - `docs/` & `examples/`: guides + sample apps.
 

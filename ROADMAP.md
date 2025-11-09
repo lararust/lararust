@@ -70,7 +70,7 @@ Build **LaraBlade**, a Blade-inspired template engine with its own syntax and ca
   * Support for nested templates (`@extends('layout')`)
 * **Hot Reload**
 
-  * Watcher for `.blade.html` files
+  * Watcher for `.larablade.html` files
 
 ---
 

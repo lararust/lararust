@@ -2,7 +2,8 @@ mod cli;
 mod http;
 mod prelude;
 mod support;
-
+#[macro_use]
+mod view;
 use cli::run_cli;
 
 #[tokio::main]

@@ -1,19 +1,23 @@
-use axum::{Router, response::Html, routing::get};
-use std::fs;
+use crate::{ctx, view::view};
 
+use axum::{Router, response::Html, routing::get};
+
+/// Registers routes
 pub fn routes() -> Router {
     Router::new()
         .route("/", get(home))
         .route("/health", get(|| async { "OK" }))
 }
 
-// @todo implement logs
+/// Example route rendering a LaraBlade template
 pub async fn home() -> Html<String> {
-    let content = fs::read_to_string("resources/views/welcome.html.tera")
-        .unwrap_or_else(|_| {
-            eprintln!("Error reading template");
-            String::from("<h1>Error loading page</h1>")
-        });
+    // Build context using the ctx! macro
+    let ctx = ctx! {
+        "name" => "Vinícius Rech",
+        "admin" => true,
+        "age" => 32,
+        "roles" => vec!["developer", "maintainer"]
+    };
 
-    Html(content)
+    Html(view("welcome", ctx))
 }
