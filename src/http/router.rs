@@ -19,5 +19,5 @@ pub async fn home() -> Html<String> {
         "roles" => vec!["developer", "maintainer"]
     };
 
-    Html(view("welcome", ctx))
+    view("welcome", ctx)
 }

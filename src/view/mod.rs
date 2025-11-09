@@ -3,20 +3,21 @@ pub mod helpers;
 pub mod larablade;
 pub mod renderer;
 
+use axum::response::Html;
 use cache::{cache_view, get_cached};
 use larablade::compile_larablade;
 use renderer::render_larablade;
 use std::{env, fs};
 use tera::Context;
 
-pub fn view(template: &str, context: Context) -> String {
+pub fn view(template: &str, context: Context) -> Html<String> {
     let app_env = env::var("APP_ENV").unwrap_or_else(|_| "development".into());
     let use_cache = app_env.eq_ignore_ascii_case("production");
 
     if use_cache {
         if let Some(cached) = get_cached(template) {
             println!("♻️ Serving cached view: {}", template);
-            return cached;
+            return Html(cached);
         }
     }
 
@@ -33,5 +34,5 @@ pub fn view(template: &str, context: Context) -> String {
         cache_view(template, &rendered);
     }
 
-    rendered
+    Html(rendered)
 }
