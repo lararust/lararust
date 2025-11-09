@@ -5,12 +5,10 @@ pub fn render_larablade(template: &str, context: &Context) -> String {
     let mut output = template.to_string();
 
     let if_else_re =
-        Regex::new(r"(?s)\{% if (.+?) %\}(.*?)\{% else %\}(.*?)\{% endif %\}")
-            .unwrap();
+        Regex::new(r"(?s)\{% if (.+?) %\}(.*?)\{% else %\}(.*?)\{% endif %\}").unwrap();
     output = replace_conditionals(output, &if_else_re, context);
 
-    let if_only_re =
-        Regex::new(r"(?s)\{% if (.+?) %\}(.*?)\{% endif %\}").unwrap();
+    let if_only_re = Regex::new(r"(?s)\{% if (.+?) %\}(.*?)\{% endif %\}").unwrap();
     output = replace_conditionals(output, &if_only_re, context);
 
     let var_re = Regex::new(r"\{\{\s*([\w\.]+)\s*\}\}").unwrap();
@@ -33,9 +31,7 @@ pub fn render_larablade(template: &str, context: &Context) -> String {
     output
 }
 
-fn replace_conditionals(
-    mut template: String, regex: &Regex, context: &Context,
-) -> String {
+fn replace_conditionals(mut template: String, regex: &Regex, context: &Context) -> String {
     while let Some(cap) = regex.captures(&template) {
         let full = cap.get(0).unwrap().as_str();
         let var = cap.get(1).unwrap().as_str().trim();

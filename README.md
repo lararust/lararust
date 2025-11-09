@@ -5,9 +5,21 @@
 
 > Laravel’s productivity with Rust’s safety, performance, and native async power.
 
-LaraRust aims to recreate—and eventually surpass—the Laravel developer experience while leaning on Rust’s reliability. It provides a CLI-first workflow, expressive routing, Blade-inspired templating, an Eloquent-like ORM, and an opinionated ecosystem designed for modern cloud workloads.
+LaraRust aims to recreate—and eventually surpass—the Laravel developer experience while leaning on Rust’s reliability. It includes a handcrafted HTTP stack (`Request`, `Response`, `Router`, `Server`), Blade-inspired templating, and an opinionated workflow designed for modern cloud workloads.
 
-🚧 **Status:** Pre-MVP. Follow the roadmap for milestone progress and current focus areas.
+🚧 **Status:** Pre-MVP (v0.2.0). Follow the roadmap for milestone progress and current focus areas.
+
+## Preview Snapshot (November 2025)
+
+**Current Version: 0.2.0**
+
+- Minimal single-threaded HTTP server backed on `std::net::TcpListener`.
+- Ergonomic `Router` with `get/post/put/patch/delete/head/options` helpers with proper HTTP/1.1 semantics.
+- Text-based responses out of the box; LaraBlade templates can be rendered inside handlers.
+- Proper HEAD request handling (headers only, no body per HTTP spec).
+- Proper OPTIONS handling for CORS preflight requests.
+- Comprehensive documentation throughout the HTTP module.
+- CLI with version information and serve command.
 
 ---
 
@@ -20,35 +32,77 @@ LaraRust aims to recreate—and eventually surpass—the Laravel developer exper
 
 ## Getting Started (Early Preview)
 
-Until the MVP lands, expect frequent breaking changes. The current binary ships with a single `serve` command that boots the Axum-based dev server and renders the Blade-inspired `resources/views/welcome.larablade.html` template.
+Until the MVP lands, expect frequent breaking changes. The current binary boots the experimental router + HTTP server that live in `src/http` so we can iterate on the Laravel-esque APIs before pulling in heavier dependencies again.
 
 1. Install the latest stable Rust toolchain: `rustup default stable`.
-2. Clone the repo and install dependencies:
+2. Clone the repo and pre-fetch dependencies:
    ```bash
    git clone https://github.com/<org>/lararust.git
    cd lararust
    cargo fetch
    ```
-3. Copy the example environment file if you need to tweak defaults:
+3. Copy `.env.example` if you want to customize the defaults:
    ```bash
    cp .env.example .env
    ```
-4. Run the CLI:
+4. Run the dev server (the CLI and direct binary now share the same boot sequence):
    ```bash
+   cargo run
+   # or
    cargo run -- serve
    ```
-5. Visit http://127.0.0.1:8080 (or the `APP_PORT` you configured). `/` renders the welcome LaraBlade template and `/health` returns `OK`.
+5. Visit http://127.0.0.1:8080 (or whatever `APP_PORT` you set). The sample router already wires the following responses:
+   - `/` → renders `resources/views/welcome.larablade.html`
+   - `/health` → “OK”
+   - `/hello` → “Hello from Lararust Router!”
+
+Use `Ctrl+C` to stop the process; each connection is currently handled on a background thread.
+
+### Routes & Handlers
+
+The router accepts synchronous functions/closures that take a parsed `Request` and return a `Response`. `src/app.rs` centralizes the dev server bootstrap so both `cargo run` and `cargo run -- serve` hit the same code path:
+
+```rust
+use crate::{
+    http::{response::Response, server::Server},
+    prelude::{app_port, load_env, Router},
+    view::view,
+};
+
+pub fn run_dev_server() {
+    load_env();
+
+    let mut router = Router::new();
+
+    router
+        .get("/", |_req| {
+            let ctx = ctx! {
+                "framework" => "LaraRust",
+                "admin" => true,
+            };
+
+            view("welcome", ctx)
+        })
+        .get("/health", |_req| Response::text("OK"))
+        .get("/hello", |_req| Response::text("Hello from LaraRust Router!"));
+
+    let address = format!("127.0.0.1:{}", app_port());
+    Server::new(&address, router).run();
+}
+```
+
+Routing is currently an exact method + path match. As we iterate we’ll add path params, middleware, and async handlers.
 
 ### Configuration
 
-The runtime reads environment variables via `dotenvy`. Supported keys today:
+`main.rs` calls `load_env()` before the router boots, so `.env` is read (via `dotenvy`) and simple helpers handle defaults:
 
 | Key        | Default       | Purpose                                                         |
 | ---------- | ------------- | --------------------------------------------------------------- |
-| `APP_ENV`  | `development` | Controls logging banner and turns **view caching on only in production**. |
-| `APP_PORT` | `8080`        | Port for the embedded server.                                   |
+| `APP_ENV`  | `development` | Controls the banner printed during boot and toggles LaraBlade caching (only on in production). |
+| `APP_PORT` | `8080`        | Port for the handcrafted TCP server (must be > 0 and < 65535).  |
 
-Edit `.env` (based on `.env.example`) or set real env vars before running the CLI.
+Update `.env` or export real environment variables before running `cargo run`. Future milestones will layer in richer config modules.
 
 ### Project Layout
 
@@ -57,12 +111,12 @@ resources/
 └── views/                  # LaraBlade templates (e.g., welcome.larablade.html)
 storage/framework/views/    # Cached HTML (auto-created when APP_ENV=production)
 src/
-├── cli/                    # CLI entry points (`serve`)
-├── http/                   # Axum router + server bootstrap
+├── cli/                    # CLI entry points (stubs while router lives in main.rs)
+├── http/                   # Handcrafted Request/Response/Router/Server stack
 ├── view/                   # LaraBlade compiler, renderer, cache helpers
-├── support/                # Environment helpers, future utilities
+├── support/                # Environment helpers and future utilities
 ├── prelude.rs              # Common re-exports
-└── main.rs                 # Tokio entry point calling the CLI
+└── main.rs                 # Tokio entry point that boots the router + server
 ```
 
 Expect this layout to evolve toward the multi-crate structure described in the roadmap.
@@ -70,7 +124,7 @@ Expect this layout to evolve toward the multi-crate structure described in the r
 ### LaraBlade Workflow
 
 1. Create templates in `resources/views/<name>.larablade.html` using Blade-like directives (`@if`, `@foreach`, `{{ $var }}`).
-2. Call `view("<name>")` inside handlers (see `src/http/router.rs`) to load, compile, and render the template.
+2. Call `view("<name>")` from `src/view/mod.rs` inside your handler; it now returns a fully formed `Response` with `text/html` headers so you can hand it straight to the router.
 3. Add edge-case data to the temporary context in `src/view/mod.rs` until the formal data layer lands.
 4. When `APP_ENV=production`, rendered output is cached under `storage/framework/views` for faster responses; in other environments the compiler re-runs on every request so you can iterate on templates freely.
 

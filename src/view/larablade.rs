@@ -9,10 +9,7 @@ pub fn compile_larablade(content: &str) -> String {
     let if_re = Regex::new(r"@if\s*\((.+?)\)").unwrap();
     result = if_re
         .replace_all(&result, |caps: &regex::Captures| {
-            format!(
-                "{{% if {} %}}",
-                normalize_identifier(caps.get(1).unwrap().as_str())
-            )
+            format!("{{% if {} %}}", normalize_identifier(caps.get(1).unwrap().as_str()))
         })
         .to_string();
 
@@ -20,10 +17,7 @@ pub fn compile_larablade(content: &str) -> String {
     let elseif_re = Regex::new(r"@elseif\s*\((.+?)\)").unwrap();
     result = elseif_re
         .replace_all(&result, |caps: &regex::Captures| {
-            format!(
-                "{{% else if {} %}}",
-                normalize_identifier(caps.get(1).unwrap().as_str())
-            )
+            format!("{{% else if {} %}}", normalize_identifier(caps.get(1).unwrap().as_str()))
         })
         .to_string();
 
@@ -31,12 +25,10 @@ pub fn compile_larablade(content: &str) -> String {
     result = result.replace("@endif", "{% endif %}");
 
     // Handle @foreach($items as $item) → {% for item in items %}
-    let for_re =
-        Regex::new(r"@foreach\s*\(\s*(.+?)\s+as\s+(.+?)\s*\)").unwrap();
+    let for_re = Regex::new(r"@foreach\s*\(\s*(.+?)\s+as\s+(.+?)\s*\)").unwrap();
     result = for_re
         .replace_all(&result, |caps: &regex::Captures| {
-            let collection =
-                normalize_identifier(caps.get(1).unwrap().as_str());
+            let collection = normalize_identifier(caps.get(1).unwrap().as_str());
             let item = normalize_identifier(caps.get(2).unwrap().as_str());
             format!("{{% for {} in {} %}}", item, collection)
         })

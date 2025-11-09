@@ -30,7 +30,6 @@ impl Method {
 pub struct Request {
     pub method: Method,
     pub path: String,
-    pub headers: HashMap<String, String>,
     pub body: Vec<u8>,
 }
 
@@ -54,8 +53,7 @@ impl Request {
             }
 
             if let Some((key, value)) = line.split_once(":") {
-                headers
-                    .insert(key.trim().to_string(), value.trim().to_string());
+                headers.insert(key.trim().to_string(), value.trim().to_string());
             }
         }
 
@@ -64,6 +62,6 @@ impl Request {
             .join("\n")
             .into_bytes();
 
-        Some(Self { method, path, headers, body })
+        Some(Self { method, path, body })
     }
 }

@@ -1,29 +1,29 @@
 # ===============================
-# FORMATAÇÃO GERAL
+# GENERAL FORMATTING
 # ===============================
 
-# Largura máxima de linha (em caracteres)
-max_width = 80
+# Maximum line width (in characters)
+max_width = 99
 
-# Indenta com 4 espaços (padrão idiomático Rust)
+# Indent with 4 spaces (Rust idiomatic standard)
 tab_spaces = 4
 
-# Mantém um estilo consistente entre arquivos
+# Keep a consistent style across files
 edition = "2021"
 
 
 # ===============================
-# QUEBRA DE LINHAS E CHAMADAS
+# LINE BREAKS AND CALLS
 # ===============================
 
-# Força que chamadas de função longas usem múltiplas linhas
+# Force long function calls to use multiple lines
 fn_call_width = 80
 fn_call_style = "Block"
 
-# Mantém argumentos de funções em linhas separadas quando passam do limite
+# Keep function arguments on separate lines when exceeding the limit
 args_layout = "Compressed"
 
-# Mesmo comportamento para structs e tuplas
+# Same behavior for structs and tuples
 struct_lit_width = 40
 struct_lit_style = "Block"
 array_width = 40
@@ -31,62 +31,62 @@ array_layout = "Vertical"
 chain_width = 40
 
 # ===============================
-# FORMATAÇÃO DE EXPRESSÕES
+# EXPRESSION FORMATTING
 # ===============================
 
-# Mantém o operador em uma linha separada ao quebrar
+# Keep the operator on a separate line when breaking
 binop_separator = "Front"
 
-# Quebra expressões longas em várias linhas
+# Break long expressions into multiple lines
 use_small_heuristics = "Off"
 
-# Força quebra de linha após o `=` em atribuições longas
+# Force a line break after `=` in long assignments
 overflow_delimited_expr = true
 
 
 # ===============================
-# ESTILO DE PONTUAÇÃO E PARÊNTESES
+# PUNCTUATION AND PARENTHESES STYLE
 # ===============================
 
-# Sempre adiciona vírgula final em chamadas e listas multilinha
+# Always add a trailing comma in multiline calls and lists
 trailing_comma = "Always"
 
-# Remove parênteses desnecessários
+# Remove unnecessary parentheses
 remove_nested_parens = true
 
 # ===============================
-# ORGANIZAÇÃO DE IMPORTS E MÓDULOS
+# IMPORTS AND MODULE ORGANIZATION
 # ===============================
 
-# Ordena automaticamente os imports
+# Automatically sort imports
 reorder_imports = true
 
-# Ordena mod declarations (útil para manter consistência)
+# Sort module declarations (useful for consistency)
 reorder_modules = true
 
-# Mantém grupos de use separados
+# Keep groups of imports separated
 group_imports = "StdExternalCrate"
 
 
 # ===============================
-# OUTRAS CONFIGURAÇÕES ÚTEIS
+# OTHER USEFUL SETTINGS
 # ===============================
 
-# Adiciona uma linha em branco entre funções
+# Add a blank line between functions
 blank_lines_lower_bound = 1
 blank_lines_upper_bound = 1
 
-# Garante indentação consistente em blocos
+# Ensure consistent indentation in blocks
 indent_style = "Block"
 
-# Remove linhas em branco duplicadas
+# Remove duplicate blank lines
 normalize_comments = true
 wrap_comments = true
 
-# Faz a mesma lógica de quebra de linha para declarações de função
+# Apply the same line-breaking logic for function declarations
 fn_args_layout = "Compressed"
 fn_args_density = "Compressed"
 fn_params_layout = "Compressed"
 
-# Limite para forçar quebra de linha em parâmetros longos
+# Limit to force line break in long parameters
 fn_args_width = 80

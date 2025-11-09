@@ -26,7 +26,7 @@ Have the functional core with CLI, embedded server, routing, and a basic view sy
   * `lararust version`, `lararust help`
 * **HTTP Core**
 
-  * Based on `hyper` + `axum`
+  * Start with the handcrafted `Request`/`Response`/`Router`/`Server` stack (see `src/http`) to validate APIs, then graduate back to `hyper` + `axum` when we need the richer feature set.
   * Routes (`get`, `post`, `put`, `delete`)
   * Basic controllers
   * Middlewares (log, CORS, etc.)
@@ -350,7 +350,7 @@ Simplify deployment and observability.
 | CLI             | Artisan             | LaraCLI                            |
 | Template Engine | Blade               | LaraBlade                          |
 | ORM             | Eloquent            | RustORM                            |
-| Routes          | Router              | Router (Axum)                      |
+| Routes          | Router              | Router (Custom, Hyper/Axum-ready)  |
 | Views           | Blade               | Blade-like Engine                  |
 | Auth            | Auth Guard          | Auth Manager                       |
 | Queue           | Redis / RabbitMQ    | Async Jobs                         |

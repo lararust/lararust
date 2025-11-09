@@ -3,21 +3,28 @@ pub mod helpers;
 pub mod larablade;
 pub mod renderer;
 
-use axum::response::Html;
+use crate::http::response::Response;
+use crate::support::env::app_env;
 use cache::{cache_view, get_cached};
 use larablade::compile_larablade;
 use renderer::render_larablade;
-use std::{env, fs};
+use std::fs;
 use tera::Context;
 
-pub fn view(template: &str, context: Context) -> Html<String> {
-    let app_env = env::var("APP_ENV").unwrap_or_else(|_| "development".into());
-    let use_cache = app_env.eq_ignore_ascii_case("production");
+/// Renders a LaraBlade template and wraps it in an HTTP `Response`.
+pub fn view(template: &str, context: Context) -> Response {
+    let rendered = render_view(template, context);
+    Response::html(rendered.into_bytes())
+}
+
+/// Renders a LaraBlade template and returns the HTML string.
+pub fn render_view(template: &str, context: Context) -> String {
+    let use_cache = app_env().eq_ignore_ascii_case("production");
 
     if use_cache {
         if let Some(cached) = get_cached(template) {
             println!("♻️ Serving cached view: {}", template);
-            return Html(cached);
+            return cached;
         }
     }
 
@@ -34,5 +41,5 @@ pub fn view(template: &str, context: Context) -> Html<String> {
         cache_view(template, &rendered);
     }
 
-    Html(rendered)
+    rendered
 }
