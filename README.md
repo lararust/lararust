@@ -17,7 +17,7 @@ LaraRust aims to recreate—and eventually surpass—the Laravel developer exper
 
 ## Getting Started (Early Preview)
 
-Until the MVP lands, expect frequent breaking changes. The current binary ships with a single `serve` command that boots the Axum-based dev server and serves the static `welcome.html.tera` view.
+Until the MVP lands, expect frequent breaking changes. The current binary ships with a single `serve` command that boots the Axum-based dev server and renders the Blade-inspired `resources/views/welcome.larablade.html` template.
 
 1. Install the latest stable Rust toolchain: `rustup default stable`.
 2. Clone the repo and install dependencies:  
@@ -34,32 +34,42 @@ Until the MVP lands, expect frequent breaking changes. The current binary ships 
    ```bash
    cargo run -- serve
    ```
-5. Visit http://127.0.0.1:8080 (or the `APP_PORT` you configured). `/` renders the welcome template and `/health` returns `OK`.
+5. Visit http://127.0.0.1:8080 (or the `APP_PORT` you configured). `/` renders the welcome LaraBlade template and `/health` returns `OK`.
 
 ### Configuration
 
 The runtime reads environment variables via `dotenvy`. Supported keys today:
 
-| Key        | Default       | Purpose                        |
-| ---------- | ------------- | ------------------------------ |
-| `APP_ENV`  | `development` | Prints the environment banner. |
-| `APP_PORT` | `8080`        | Port for the embedded server.  |
+| Key        | Default       | Purpose                                                         |
+| ---------- | ------------- | --------------------------------------------------------------- |
+| `APP_ENV`  | `development` | Controls logging banner and turns **view caching on only in production**. |
+| `APP_PORT` | `8080`        | Port for the embedded server.                                   |
 
 Edit `.env` (based on `.env.example`) or set real env vars before running the CLI.
 
 ### Project Layout
 
 ```
+resources/
+└── views/                  # LaraBlade templates (e.g., welcome.larablade.html)
+storage/framework/views/    # Cached HTML (auto-created when APP_ENV=production)
 src/
-├── cli/            # CLI entry points (`serve` command)
-├── http/           # Axum router + server bootstrap
-├── resources/      # Temporary view templates
-├── support/        # Environment helpers, future utilities
-├── prelude.rs      # Common re-exports
-└── main.rs         # Tokio entry point calling the CLI
+├── cli/                    # CLI entry points (`serve`)
+├── http/                   # Axum router + server bootstrap
+├── view/                   # LaraBlade compiler, renderer, cache helpers
+├── support/                # Environment helpers, future utilities
+├── prelude.rs              # Common re-exports
+└── main.rs                 # Tokio entry point calling the CLI
 ```
 
 Expect this layout to evolve toward the multi-crate structure described in the roadmap.
+
+### LaraBlade Workflow
+
+1. Create templates in `resources/views/<name>.larablade.html` using Blade-like directives (`@if`, `@foreach`, `{{ $var }}`).
+2. Call `view("<name>")` inside handlers (see `src/http/router.rs`) to load, compile, and render the template.
+3. Add edge-case data to the temporary context in `src/view/mod.rs` until the formal data layer lands.
+4. When `APP_ENV=production`, rendered output is cached under `storage/framework/views` for faster responses; in other environments the compiler re-runs on every request so you can iterate on templates freely.
 
 ---
 
