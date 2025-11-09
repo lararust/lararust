@@ -1,0 +1,17 @@
+[package]
+name = "lararust"
+version = "0.1.0"
+edition = "2024"
+description = "A Rust framework inspired by Laravel"
+author = "Vinícius Rech de Camargo <vinicius.rech@gmail.com>"
+license = "MIT"
+
+[dependencies]
+tower-http = { version = "0.6.6", features = ["fs", "trace"] }
+clap = { version = "4.5.51", features = ["derive"] }
+tokio = { version = "1.48.0", features = ["full"] }
+tracing-subscriber = { version = "0.3.20", features = ["env-filter", "fmt"] }
+tracing = "0.1.41"
+dotenvy = "0.15.7"
+colored = "3.0.0"
+axum = "0.8.6"
