@@ -1,4 +1,7 @@
-# LaraRust
+<p align="center">
+<a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/lararust/lararust/refs/heads/main/.assets/lararust-full.png" width="400" alt="Lararust Logo"></a>
+
+</p>
 
 > Laravel’s productivity with Rust’s safety, performance, and native async power.
 
@@ -20,17 +23,17 @@ LaraRust aims to recreate—and eventually surpass—the Laravel developer exper
 Until the MVP lands, expect frequent breaking changes. The current binary ships with a single `serve` command that boots the Axum-based dev server and renders the Blade-inspired `resources/views/welcome.larablade.html` template.
 
 1. Install the latest stable Rust toolchain: `rustup default stable`.
-2. Clone the repo and install dependencies:  
+2. Clone the repo and install dependencies:
    ```bash
    git clone https://github.com/<org>/lararust.git
    cd lararust
    cargo fetch
    ```
-3. Copy the example environment file if you need to tweak defaults:  
+3. Copy the example environment file if you need to tweak defaults:
    ```bash
    cp .env.example .env
    ```
-4. Run the CLI:  
+4. Run the CLI:
    ```bash
    cargo run -- serve
    ```
