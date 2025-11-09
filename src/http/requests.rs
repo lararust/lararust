@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Method {
     GET,
     POST,
@@ -25,6 +26,7 @@ impl Method {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct Request {
     pub method: Method,
     pub path: String,
