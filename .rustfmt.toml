@@ -1,0 +1,92 @@
+# ===============================
+# FORMATAÇÃO GERAL
+# ===============================
+
+# Largura máxima de linha (em caracteres)
+max_width = 80
+
+# Indenta com 4 espaços (padrão idiomático Rust)
+tab_spaces = 4
+
+# Mantém um estilo consistente entre arquivos
+edition = "2021"
+
+
+# ===============================
+# QUEBRA DE LINHAS E CHAMADAS
+# ===============================
+
+# Força que chamadas de função longas usem múltiplas linhas
+fn_call_width = 80
+fn_call_style = "Block"
+
+# Mantém argumentos de funções em linhas separadas quando passam do limite
+args_layout = "Compressed"
+
+# Mesmo comportamento para structs e tuplas
+struct_lit_width = 40
+struct_lit_style = "Block"
+array_width = 40
+array_layout = "Vertical"
+chain_width = 40
+
+# ===============================
+# FORMATAÇÃO DE EXPRESSÕES
+# ===============================
+
+# Mantém o operador em uma linha separada ao quebrar
+binop_separator = "Front"
+
+# Quebra expressões longas em várias linhas
+use_small_heuristics = "Off"
+
+# Força quebra de linha após o `=` em atribuições longas
+overflow_delimited_expr = true
+
+
+# ===============================
+# ESTILO DE PONTUAÇÃO E PARÊNTESES
+# ===============================
+
+# Sempre adiciona vírgula final em chamadas e listas multilinha
+trailing_comma = "Always"
+
+# Remove parênteses desnecessários
+remove_nested_parens = true
+
+# ===============================
+# ORGANIZAÇÃO DE IMPORTS E MÓDULOS
+# ===============================
+
+# Ordena automaticamente os imports
+reorder_imports = true
+
+# Ordena mod declarations (útil para manter consistência)
+reorder_modules = true
+
+# Mantém grupos de use separados
+group_imports = "StdExternalCrate"
+
+
+# ===============================
+# OUTRAS CONFIGURAÇÕES ÚTEIS
+# ===============================
+
+# Adiciona uma linha em branco entre funções
+blank_lines_lower_bound = 1
+blank_lines_upper_bound = 1
+
+# Garante indentação consistente em blocos
+indent_style = "Block"
+
+# Remove linhas em branco duplicadas
+normalize_comments = true
+wrap_comments = true
+
+# Faz a mesma lógica de quebra de linha para declarações de função
+fn_args_layout = "Compressed"
+fn_args_density = "Compressed"
+fn_params_layout = "Compressed"
+
+# Limite para forçar quebra de linha em parâmetros longos
+fn_args_width = 80
